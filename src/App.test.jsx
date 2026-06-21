@@ -1,56 +1,47 @@
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it } from "vitest";
 import App from "./App";
-
-beforeEach(() => {
-  window.localStorage.clear();
-});
 
 afterEach(() => {
   cleanup();
 });
 
 describe("ManiCodeLabsWebsite", () => {
-  it("renders English content by default", () => {
+  it("renders the premium hero messaging", () => {
     render(<App />);
 
     expect(
       screen.getByRole("heading", {
-        name: "Build a website that makes your business look premium.",
+        name: "Websites, Automation & Business Systems That Grow Your Business.",
       }),
     ).toBeInTheDocument();
-    expect(document.documentElement.lang).toBe("en");
-    expect(document.documentElement.dir).toBe("ltr");
+
+    expect(screen.getAllByRole("link", { name: "Book Free Consultation" }).length).toBeGreaterThan(0);
   });
 
-  it("switches the full website to Arabic and RTL mode", () => {
+  it("toggles between dark and light mode", () => {
     render(<App />);
 
-    fireEvent.click(screen.getByRole("button", { name: "Switch to Arabic" }));
+    const modeButton = screen.getByRole("button", { name: "Switch to light mode" });
+    expect(modeButton).toHaveTextContent("Light");
+    expect(document.documentElement.classList.contains("dark")).toBe(true);
 
-    expect(
-      screen.getByRole("heading", {
-        name: "أنشئ موقعًا يجعل نشاطك التجاري يبدو احترافيًا.",
-      }),
-    ).toBeInTheDocument();
-    expect(document.documentElement.lang).toBe("ar");
-    expect(document.documentElement.dir).toBe("rtl");
-    expect(screen.getByRole("button", { name: "التبديل إلى الإنجليزية" })).toHaveAttribute(
-      "aria-pressed",
-      "true",
-    );
+    fireEvent.click(modeButton);
+
+    expect(modeButton).toHaveTextContent("Dark");
+    expect(modeButton).toHaveAccessibleName("Switch to dark mode");
+    expect(document.documentElement.classList.contains("dark")).toBe(false);
   });
 
-  it("restores the saved language from localStorage", () => {
-    window.localStorage.setItem("manicode-labs-language", "ar");
-
+  it("updates live project calculator output", () => {
     render(<App />);
 
-    expect(
-      screen.getByRole("heading", {
-        name: "أنشئ موقعًا يجعل نشاطك التجاري يبدو احترافيًا.",
-      }),
-    ).toBeInTheDocument();
-    expect(document.documentElement.dir).toBe("rtl");
+    fireEvent.change(screen.getByRole("combobox"), { target: { value: "erp" } });
+
+    const sliders = screen.getAllByRole("slider");
+    fireEvent.change(sliders[0], { target: { value: "80" } });
+    fireEvent.change(sliders[1], { target: { value: "1200" } });
+
+    expect(screen.getByText("₹7,54,000")).toBeInTheDocument();
   });
 });
