@@ -338,7 +338,7 @@ const siteContent = {
           {
             step: "03",
             title: "التصميم والتنفيذ",
-            desc: "ننشىء الموقع أو النظام بواجهة نظيفة وتصميم متجاوب ومحتوى يركز على الأعمال.",
+            desc: "ننشئ الموقع أو النظام بواجهة نظيفة وتصميم متجاوب ومحتوى يركز على الأعمال.",
           },
           {
             step: "04",
@@ -421,6 +421,7 @@ const siteContent = {
 };
 
 const navIds = ["services", "work", "process", "pricing", "contact"];
+const previewIcons = ["📱", "⚡", "🔒", "📈"];
 
 function ButtonLink({ children, href, variant = "primary", className = "" }) {
   const baseClass =
@@ -590,7 +591,7 @@ export default function ManiCodeLabsWebsite() {
                   <div className="mt-4 grid grid-cols-2 gap-4">
                     {content.hero.preview.items.map((item, index) => (
                       <div key={item} className="rounded-3xl bg-white/5 p-5">
-                        <p className="text-3xl">{index === 0 ? "📱" : index === 1 ? "⚡" : index === 2 ? "🔒" : "📈"}</p>
+                        <p className="text-3xl">{previewIcons[index]}</p>
                         <p className="mt-3 font-bold">{item}</p>
                       </div>
                     ))}
