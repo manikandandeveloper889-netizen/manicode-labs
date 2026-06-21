@@ -44,4 +44,14 @@ describe("ManiCodeLabsWebsite", () => {
 
     expect(screen.getByText("₹7,54,000")).toBeInTheDocument();
   });
+
+  it("switches to arabic and applies rtl direction", () => {
+    render(<App />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Switch to العربية" }));
+
+    expect(document.documentElement.getAttribute("lang")).toBe("ar");
+    expect(document.documentElement.getAttribute("dir")).toBe("rtl");
+    expect(screen.getByRole("link", { name: "احجز استشارة مجانية" })).toBeInTheDocument();
+  });
 });
