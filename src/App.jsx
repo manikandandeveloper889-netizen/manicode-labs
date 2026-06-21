@@ -423,6 +423,8 @@ const siteContent = {
 const navIds = ["services", "work", "process", "pricing", "contact"];
 const previewIcons = ["📱", "⚡", "🔒", "📈"];
 const languageStorageKey = "manicode-labs-language";
+const getNextLanguage = (currentLanguage) => (currentLanguage === "en" ? "ar" : "en");
+const getStoredLanguage = () => (window.localStorage.getItem(languageStorageKey) === "ar" ? "ar" : "en");
 
 function ButtonLink({ children, href, variant = "primary" }) {
   const baseClass =
@@ -489,13 +491,7 @@ function LanguageSwitch({ isArabic, onToggle, label }) {
 }
 
 export default function ManiCodeLabsWebsite() {
-  const [language, setLanguage] = useState(() => {
-    if (typeof window === "undefined") {
-      return "en";
-    }
-
-    return window.localStorage.getItem(languageStorageKey) === "ar" ? "ar" : "en";
-  });
+  const [language, setLanguage] = useState(getStoredLanguage);
   const content = siteContent[language];
   const isArabic = language === "ar";
   const directionalPosition = (rtlClass, ltrClass) => (isArabic ? rtlClass : ltrClass);
@@ -538,7 +534,7 @@ export default function ManiCodeLabsWebsite() {
             <LanguageSwitch
               isArabic={isArabic}
               label={content.languageToggleLabel}
-              onToggle={() => setLanguage((current) => (current === "en" ? "ar" : "en"))}
+              onToggle={() => setLanguage(getNextLanguage)}
             />
             <div className="hidden sm:block">
               <ButtonLink href={company.whatsapp[language]} variant="light">
