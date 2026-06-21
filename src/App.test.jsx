@@ -4,6 +4,7 @@ import App from "./App";
 
 afterEach(() => {
   cleanup();
+  localStorage.clear();
 });
 
 describe("ManiCodeLabsWebsite", () => {
@@ -43,5 +44,15 @@ describe("ManiCodeLabsWebsite", () => {
     fireEvent.change(sliders[1], { target: { value: "1200" } });
 
     expect(screen.getByText("₹7,54,000")).toBeInTheDocument();
+  });
+
+  it("switches to arabic and applies rtl direction", () => {
+    render(<App />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Switch to العربية" }));
+
+    expect(document.documentElement.getAttribute("lang")).toBe("ar");
+    expect(document.documentElement.getAttribute("dir")).toBe("rtl");
+    expect(screen.getAllByRole("link", { name: "احجز استشارة مجانية" }).length).toBeGreaterThan(0);
   });
 });
