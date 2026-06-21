@@ -534,7 +534,7 @@ export default function ManiCodeLabsWebsite() {
             <LanguageSwitch
               isArabic={isArabic}
               label={content.languageToggleLabel}
-              onToggle={() => setLanguage(getNextLanguage)}
+              onToggle={() => setLanguage((currentLanguage) => getNextLanguage(currentLanguage))}
             />
             <div className="hidden sm:block">
               <ButtonLink href={company.whatsapp[language]} variant="light">
