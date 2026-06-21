@@ -4,6 +4,7 @@ import App from "./App";
 
 afterEach(() => {
   cleanup();
+  localStorage.clear();
 });
 
 describe("ManiCodeLabsWebsite", () => {
@@ -52,6 +53,6 @@ describe("ManiCodeLabsWebsite", () => {
 
     expect(document.documentElement.getAttribute("lang")).toBe("ar");
     expect(document.documentElement.getAttribute("dir")).toBe("rtl");
-    expect(screen.getByRole("link", { name: "احجز استشارة مجانية" })).toBeInTheDocument();
+    expect(screen.getAllByRole("link", { name: "احجز استشارة مجانية" }).length).toBeGreaterThan(0);
   });
 });

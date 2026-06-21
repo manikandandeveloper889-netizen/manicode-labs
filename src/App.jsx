@@ -7,6 +7,7 @@ const canUseGsap = typeof window !== "undefined";
 if (canUseGsap) {
   gsap.registerPlugin(ScrollTrigger);
 }
+const DEFAULT_LANGUAGE = "en";
 
 const company = {
   email: "hello@manicodelabs.com",
@@ -17,7 +18,7 @@ const company = {
 const languageMeta = {
   en: { code: "en", direction: "ltr", locale: "en-IN", label: "English" },
   fr: { code: "fr", direction: "ltr", locale: "fr-FR", label: "Français" },
-  ar: { code: "ar", direction: "rtl", locale: "ar-EG", label: "العربية" },
+  ar: { code: "ar", direction: "rtl", locale: "ar", label: "العربية" },
 };
 
 const englishCopy = {
@@ -439,14 +440,28 @@ function Counter({ value, suffix, label }) {
 
 export default function App() {
   const [dark, setDark] = useState(true);
-  const [language, setLanguage] = useState("en");
+  const [language, setLanguage] = useState(() => {
+    if (typeof window === "undefined") {
+      return DEFAULT_LANGUAGE;
+    }
+    return localStorage.getItem("site-language") ?? DEFAULT_LANGUAGE;
+  });
   const [projectType, setProjectType] = useState("website");
   const [teamSize, setTeamSize] = useState(6);
   const [monthlyLeads, setMonthlyLeads] = useState(120);
   const [auditSubmitted, setAuditSubmitted] = useState(false);
-  const content = copy[language] ?? copy.en;
-  const languageConfig = languageMeta[language] ?? languageMeta.en;
+  const content = useMemo(() => copy[language] ?? copy[DEFAULT_LANGUAGE], [language]);
+  const languageConfig = useMemo(() => languageMeta[language] ?? languageMeta[DEFAULT_LANGUAGE], [language]);
   const isRtl = languageConfig.direction === "rtl";
+  const formatCurrency = useMemo(
+    () =>
+      new Intl.NumberFormat(languageConfig.locale, {
+        style: "currency",
+        currency: "INR",
+        maximumFractionDigits: 0,
+      }),
+    [languageConfig.locale],
+  );
 
   const estimatedCost = useMemo(() => {
     const baseMap = {
@@ -469,6 +484,9 @@ export default function App() {
     document.documentElement.classList.toggle("dark", dark);
     document.documentElement.lang = languageConfig.code;
     document.documentElement.dir = languageConfig.direction;
+    if (typeof window !== "undefined") {
+      localStorage.setItem("site-language", language);
+    }
 
     if (!canUseGsap) {
       return undefined;
@@ -493,7 +511,7 @@ export default function App() {
     });
 
     return () => ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
-  }, [dark, languageConfig.code, languageConfig.direction]);
+  }, [dark, language, languageConfig.code, languageConfig.direction]);
 
   const handleAuditSubmit = (event) => {
     event.preventDefault();
@@ -501,10 +519,7 @@ export default function App() {
   };
 
   return (
-    <div
-      dir={languageConfig.direction}
-      className={`${dark ? "dark bg-slate-950 text-white" : "bg-slate-50 text-slate-900"} transition-colors`}
-    >
+    <div className={`${dark ? "dark bg-slate-950 text-white" : "bg-slate-50 text-slate-900"} transition-colors`}>
       <div className="fixed inset-0 -z-10 overflow-hidden">
         {[...Array(particleCount)].map((_, idx) => (
           <motion.span
@@ -753,7 +768,7 @@ export default function App() {
               </div>
               <div className="rounded-2xl border border-violet-400/30 bg-violet-500/10 p-6">
                 <p className="text-sm uppercase tracking-[0.2em] text-violet-300">{content.calculator.estimatedCost}</p>
-                <p className="mt-4 text-4xl font-bold">₹{estimatedCost.toLocaleString(languageConfig.locale)}</p>
+                <p className="mt-4 text-4xl font-bold">{formatCurrency.format(estimatedCost)}</p>
                 <p className="mt-3 text-sm text-slate-300">{content.calculator.estimateDescription}</p>
               </div>
             </div>
@@ -767,7 +782,7 @@ export default function App() {
               </div>
               <div>
                 <p className="text-sm text-slate-300">{content.roi.revenue}</p>
-                <p className="mt-3 text-4xl font-bold text-violet-300">₹{estimatedRoi.revenue.toLocaleString(languageConfig.locale)}</p>
+                <p className="mt-3 text-4xl font-bold text-violet-300">{formatCurrency.format(estimatedRoi.revenue)}</p>
               </div>
             </div>
           </Section>
