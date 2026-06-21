@@ -24,6 +24,7 @@ export default defineConfig([
       globals: {
         ...globals.browser,
         afterEach: 'readonly',
+        beforeEach: 'readonly',
         describe: 'readonly',
         expect: 'readonly',
         it: 'readonly',

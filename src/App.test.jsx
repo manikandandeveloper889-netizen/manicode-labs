@@ -1,6 +1,10 @@
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import App from "./App";
+
+beforeEach(() => {
+  window.localStorage.clear();
+});
 
 afterEach(() => {
   cleanup();
@@ -35,5 +39,18 @@ describe("ManiCodeLabsWebsite", () => {
       "aria-pressed",
       "true",
     );
+  });
+
+  it("restores the saved language from localStorage", () => {
+    window.localStorage.setItem("manicode-labs-language", "ar");
+
+    render(<App />);
+
+    expect(
+      screen.getByRole("heading", {
+        name: "أنشئ موقعًا يجعل نشاطك التجاري يبدو احترافيًا.",
+      }),
+    ).toBeInTheDocument();
+    expect(document.documentElement.dir).toBe("rtl");
   });
 });

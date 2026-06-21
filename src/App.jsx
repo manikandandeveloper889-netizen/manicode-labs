@@ -422,6 +422,7 @@ const siteContent = {
 
 const navIds = ["services", "work", "process", "pricing", "contact"];
 const previewIcons = ["📱", "⚡", "🔒", "📈"];
+const languageStorageKey = "manicode-labs-language";
 
 function ButtonLink({ children, href, variant = "primary" }) {
   const baseClass =
@@ -488,7 +489,13 @@ function LanguageSwitch({ isArabic, onToggle, label }) {
 }
 
 export default function ManiCodeLabsWebsite() {
-  const [language, setLanguage] = useState("en");
+  const [language, setLanguage] = useState(() => {
+    if (typeof window === "undefined") {
+      return "en";
+    }
+
+    return window.localStorage.getItem(languageStorageKey) === "ar" ? "ar" : "en";
+  });
   const content = siteContent[language];
   const isArabic = language === "ar";
   const directionalPosition = (rtlClass, ltrClass) => (isArabic ? rtlClass : ltrClass);
@@ -496,12 +503,11 @@ export default function ManiCodeLabsWebsite() {
   useEffect(() => {
     document.documentElement.lang = content.lang;
     document.documentElement.dir = content.dir;
-
-    return () => {
-      document.documentElement.lang = "en";
-      document.documentElement.dir = "ltr";
-    };
   }, [content.dir, content.lang]);
+
+  useEffect(() => {
+    window.localStorage.setItem(languageStorageKey, language);
+  }, [language]);
 
   return (
     <div
