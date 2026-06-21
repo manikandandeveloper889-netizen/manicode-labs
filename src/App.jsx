@@ -1,803 +1,655 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+const canUseGsap = typeof window !== "undefined";
+if (canUseGsap) {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 const company = {
   name: "ManiCode Labs",
-  domain: "manicodelabs.com",
-  phone: "+919025583807",
-  email: "manikandandeveloper889@gmail.com",
-  whatsapp: {
-    en: "https://wa.me/919025583807?text=Hi%20Mani%2C%20I%20want%20to%20build%20a%20website%20for%20my%20business.",
-    ar: "https://wa.me/919025583807?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%20%D9%85%D8%A7%D9%86%D9%8A%D8%8C%20%D8%A3%D8%B1%D9%8A%D8%AF%20%D8%A5%D9%86%D8%B4%D8%A7%D8%A1%20%D9%85%D9%88%D9%82%D8%B9%20%D9%88%D9%8A%D8%A8%20%D9%84%D8%B9%D9%85%D9%84%D9%8A.",
-  },
-  mailto: {
-    en: "mailto:manikandandeveloper889@gmail.com?subject=Website%20Project%20Enquiry%20-%20ManiCode%20Labs",
-    ar: "mailto:manikandandeveloper889@gmail.com?subject=%D8%A7%D8%B3%D8%AA%D9%81%D8%B3%D8%A7%D8%B1%20%D9%85%D8%B4%D8%B1%D9%88%D8%B9%20%D9%85%D9%88%D9%82%D8%B9%20%D9%88%D9%8A%D8%A8%20-%20ManiCode%20Labs",
-  },
+  email: "hello@manicodelabs.com",
+  phone: "+91 90255 83807",
+  whatsapp: "https://wa.me/919025583807?text=Hi%20ManiCode%20Labs%2C%20I%20want%20a%20free%20consultation.",
 };
 
-const siteContent = {
-  en: {
-    lang: "en",
-    dir: "ltr",
-    languageToggleLabel: "Switch to Arabic",
-    navLabel: "Main navigation",
-    nav: ["Services", "Work", "Process", "Pricing", "Contact"],
-    headerCta: "WhatsApp",
-    hero: {
-      badge: "Websites • Automation • Laravel Solutions",
-      title: "Build a website that makes your business look premium.",
-      text:
-        "ManiCode Labs helps businesses create professional websites, WhatsApp lead systems, custom dashboards, and business automation tools that convert visitors into customers.",
-      primaryCta: "Start Your Project →",
-      secondaryCta: "Explore Services",
-      stats: [
-        { value: "3-7", label: "Days launch" },
-        { value: "₹4,999", label: "Starting" },
-        { value: "100%", label: "Mobile-ready" },
-      ],
-      preview: {
-        eyebrow: "Live Website Preview",
-        title: "Your business, online and trusted.",
-        text: "Website + WhatsApp + enquiry system + SEO-ready structure.",
-        items: ["Responsive", "Fast", "Secure", "Lead Focused"],
-      },
-    },
-    sections: {
-      services: {
-        eyebrow: "Services",
-        title: "Everything your business needs to grow online.",
-        text:
-          "Start with a professional website, then scale with lead systems, automation, custom dashboards, and support.",
-        items: [
-          {
-            icon: "🌐",
-            title: "Business Websites",
-            desc: "Premium, mobile-first websites for shops, startups, schools, clinics, salons, and service businesses.",
-            points: ["Landing pages", "Company websites", "Portfolio websites"],
-          },
-          {
-            icon: "💬",
-            title: "WhatsApp Lead Systems",
-            desc: "Turn visitors into enquiries with WhatsApp buttons, lead forms, enquiry flows, and follow-up support.",
-            points: ["Click-to-chat", "Lead forms", "Enquiry tracking"],
-          },
-          {
-            icon: "💻",
-            title: "Custom Web Apps",
-            desc: "Laravel dashboards, booking systems, billing tools, school ERP modules, and internal business tools.",
-            points: ["Admin panels", "Dashboards", "Reports"],
-          },
-          {
-            icon: "🛠️",
-            title: "Maintenance & Hosting",
-            desc: "Monthly care for updates, hosting, backup, small fixes, security checks, and performance improvement.",
-            points: ["Hosting", "Backups", "Monthly support"],
-          },
-        ],
-      },
-      work: {
-        eyebrow: "Demo Work",
-        title: "Demo projects that show what we can build.",
-        text: "These project styles can be customized for your business, brand, and workflow.",
-        cta: "Build similar →",
-        items: [
-          {
-            icon: "🍽️",
-            title: "Restaurant Website",
-            type: "Food Business",
-            desc: "Menu, location, WhatsApp order button, gallery, and enquiry form.",
-          },
-          {
-            icon: "🏫",
-            title: "School ERP Dashboard",
-            type: "Education",
-            desc: "Students, fees, attendance, reports, and admin access modules.",
-          },
-          {
-            icon: "💇",
-            title: "Salon Booking Page",
-            type: "Service Business",
-            desc: "Services, packages, appointment enquiry, reviews, and contact CTA.",
-          },
-        ],
-      },
-      industries: {
-        eyebrow: "Industries",
-        title: "We build for local businesses, startups, and service brands.",
-        text:
-          "If your customers search online, message on WhatsApp, or check reviews before buying, your business needs a strong online presence.",
-        items: [
-          "Restaurants",
-          "Salons",
-          "Clinics",
-          "Schools",
-          "Tuition Centres",
-          "Gyms",
-          "Travel Agencies",
-          "Real Estate",
-          "Retail Shops",
-          "Service Providers",
-        ],
-      },
-      process: {
-        eyebrow: "Process",
-        title: "Simple, clear, and professional workflow.",
-        text: "No confusion. You know what will be built, when it will be delivered, and what support you get.",
-        items: [
-          {
-            step: "01",
-            title: "Free Consultation",
-            desc: "We understand your business, target customers, and the exact website or software requirement.",
-          },
-          {
-            step: "02",
-            title: "Plan & Pricing",
-            desc: "You get a clear scope, timeline, price, and deliverables before the project starts.",
-          },
-          {
-            step: "03",
-            title: "Design & Build",
-            desc: "We create the website or system with clean UI, responsive layout, and business-focused content.",
-          },
-          {
-            step: "04",
-            title: "Launch & Support",
-            desc: "After final approval, your website goes live with support for changes and improvements.",
-          },
-        ],
-      },
-      pricing: {
-        eyebrow: "Pricing",
-        title: "Transparent packages for every business stage.",
-        text: "Choose a starter website, a growth website, or a custom software solution based on your requirement.",
-        popular: "Popular",
-        choose: "Choose",
-        items: [
-          {
-            name: "Starter",
-            price: "₹4,999",
-            subtitle: "For personal brands and small shops",
-            features: ["1-page website", "Mobile responsive", "WhatsApp CTA", "Basic SEO", "Delivery in 3-5 days"],
-          },
-          {
-            name: "Growth",
-            price: "₹14,999",
-            subtitle: "For businesses that need online trust",
-            features: ["Up to 5 pages", "Contact form", "Google Maps", "Service sections", "Speed optimization", "Delivery in 7-10 days"],
-            popular: true,
-          },
-          {
-            name: "Custom",
-            price: "₹29,999+",
-            subtitle: "For custom software and automation",
-            features: ["Laravel web app", "Admin dashboard", "Database setup", "Reports", "Role-based access", "Custom workflow"],
-          },
-        ],
-      },
-      faq: {
-        eyebrow: "FAQ",
-        title: "Common questions before starting a project.",
-        text: "Clear answers help you decide faster and start with confidence.",
-        items: [
-          {
-            q: "How long does it take to build a website?",
-            a: "A basic website can be completed in 3-7 days. Custom web applications depend on features and scope.",
-          },
-          {
-            q: "Do you provide domain and hosting support?",
-            a: "Yes. We can guide or manage domain, hosting, email setup, SSL, and deployment.",
-          },
-          {
-            q: "Can you build custom Laravel applications?",
-            a: "Yes. ManiCode Labs builds dashboards, admin panels, ERP modules, booking systems, and custom workflows.",
-          },
-          {
-            q: "Do you provide monthly maintenance?",
-            a: "Yes. Monthly support is available for backups, updates, fixes, hosting support, and small improvements.",
-          },
-        ],
-      },
-      contact: {
-        eyebrow: "Contact",
-        title: "Ready to build your business website?",
-        text: "Message us with your business name and requirement. We will suggest the best plan and cost clearly.",
-        website: "Website",
-        phone: "Phone",
-        email: "Email",
-        primaryCta: "WhatsApp Now →",
-        secondaryCta: "Email Us",
-        formEyebrow: "Project Enquiry",
-        formTitle: "Tell us what you need.",
-        enquiryCards: [
-          "Business type: Restaurant / Shop / School / Service",
-          "Need: Website / Lead system / Custom app",
-          "Budget: Starter / Growth / Custom",
-        ],
-        formCta: "Send Details on WhatsApp",
-      },
-    },
+const navItems = [
+  { label: "Services", id: "services" },
+  { label: "Solutions", id: "solutions" },
+  { label: "Case Studies", id: "case-studies" },
+  { label: "Pricing", id: "pricing" },
+  { label: "Testimonials", id: "testimonials" },
+  { label: "FAQ", id: "faq" },
+];
+// Estimated incremental delivery cost per additional operational team member.
+const teamSizeMultiplier = 4500;
+// Estimated scaling cost factor per expected monthly enquiry.
+const monthlyLeadsMultiplier = 120;
+// Conservative lead uplift from conversion-focused redesign + automation.
+const roiLeadRate = 0.18;
+// Operational uplift from team enablement in optimized workflows.
+const roiTeamFactor = 6;
+// Average revenue contribution per additional qualified lead.
+const revenuePerLead = 2500;
+// 18 particles keeps motion premium while staying smooth on low-end mobile devices.
+const particleCount = 18;
+
+const services = [
+  "Business Websites",
+  "WhatsApp Lead Systems",
+  "School ERP",
+  "Hotel Management Systems",
+  "Restaurant Ordering Systems",
+  "CRM Solutions",
+  "Booking Systems",
+  "Custom Dashboards",
+  "Business Automation",
+];
+
+const dashboards = [
+  { title: "Attendance Tracking", metric: "96% live sync" },
+  { title: "Hotel Bookings", metric: "3.2x booking speed" },
+  { title: "Restaurant Orders", metric: "41% faster fulfilment" },
+  { title: "CRM Pipeline", metric: "2.8x lead conversion" },
+  { title: "Analytics Reports", metric: "Real-time KPIs" },
+];
+
+const industries = [
+  "Schools",
+  "Hotels",
+  "Restaurants",
+  "Shopping Malls",
+  "Clinics",
+  "Salons",
+  "Gyms",
+  "Real Estate",
+  "Retail Stores",
+  "Service Businesses",
+];
+
+const processSteps = ["Discovery", "Planning", "Design", "Development", "Launch", "Support"];
+
+const products = [
+  "School ERP",
+  "Hotel Dashboard",
+  "Restaurant POS",
+  "CRM System",
+  "Booking Platform",
+  "Inventory Management",
+];
+
+const stats = [
+  { value: 100, suffix: "+", label: "Projects" },
+  { value: 50, suffix: "+", label: "Businesses Automated" },
+  { value: 98, suffix: "%", label: "Client Satisfaction" },
+  { value: 24, suffix: "/7", label: "Support" },
+];
+
+const pricing = [
+  {
+    tier: "Starter",
+    price: "₹24,999",
+    points: ["Premium one-page website", "WhatsApp lead capture", "SEO foundations"],
   },
-  ar: {
-    lang: "ar",
-    dir: "rtl",
-    languageToggleLabel: "التبديل إلى الإنجليزية",
-    navLabel: "التنقل الرئيسي",
-    nav: ["الخدمات", "الأعمال", "الخطوات", "الأسعار", "التواصل"],
-    headerCta: "واتساب",
-    hero: {
-      badge: "مواقع إلكترونية • أتمتة • حلول Laravel",
-      title: "أنشئ موقعًا يجعل نشاطك التجاري يبدو احترافيًا.",
-      text:
-        "تساعد ManiCode Labs الشركات على إنشاء مواقع احترافية وأنظمة جذب العملاء عبر واتساب ولوحات تحكم مخصصة وأدوات أتمتة تحول الزوار إلى عملاء.",
-      primaryCta: "ابدأ مشروعك →",
-      secondaryCta: "استكشف الخدمات",
-      stats: [
-        { value: "3-7", label: "أيام للإطلاق" },
-        { value: "₹4,999", label: "سعر البداية" },
-        { value: "100%", label: "جاهز للجوال" },
-      ],
-      preview: {
-        eyebrow: "معاينة مباشرة للموقع",
-        title: "نشاطك التجاري على الإنترنت وبشكل موثوق.",
-        text: "موقع + واتساب + نظام استفسارات + بنية جاهزة لمحركات البحث.",
-        items: ["متجاوب", "سريع", "آمن", "يركز على العملاء المحتملين"],
-      },
-    },
-    sections: {
-      services: {
-        eyebrow: "الخدمات",
-        title: "كل ما يحتاجه نشاطك التجاري للنمو عبر الإنترنت.",
-        text:
-          "ابدأ بموقع احترافي ثم توسع بأنظمة العملاء المحتملين والأتمتة ولوحات التحكم المخصصة والدعم المستمر.",
-        items: [
-          {
-            icon: "🌐",
-            title: "مواقع الأعمال",
-            desc: "مواقع فاخرة ومتوافقة مع الجوال للمتاجر والشركات الناشئة والمدارس والعيادات والصالونات ومقدمي الخدمات.",
-            points: ["صفحات هبوط", "مواقع شركات", "مواقع أعمال شخصية"],
-          },
-          {
-            icon: "💬",
-            title: "أنظمة العملاء عبر واتساب",
-            desc: "حوّل الزوار إلى استفسارات من خلال أزرار واتساب ونماذج العملاء ومسارات الاستفسار ودعم المتابعة.",
-            points: ["بدء محادثة مباشرة", "نماذج عملاء", "تتبع الاستفسارات"],
-          },
-          {
-            icon: "💻",
-            title: "تطبيقات ويب مخصصة",
-            desc: "لوحات Laravel وأنظمة الحجز وأدوات الفوترة ووحدات ERP للمدارس وأدوات الأعمال الداخلية.",
-            points: ["لوحات إدارة", "لوحات تحكم", "تقارير"],
-          },
-          {
-            icon: "🛠️",
-            title: "الصيانة والاستضافة",
-            desc: "رعاية شهرية للتحديثات والاستضافة والنسخ الاحتياطي والإصلاحات الصغيرة وفحوصات الأمان وتحسين الأداء.",
-            points: ["استضافة", "نسخ احتياطي", "دعم شهري"],
-          },
-        ],
-      },
-      work: {
-        eyebrow: "نماذج أعمال",
-        title: "مشاريع تجريبية توضح ما يمكننا بناؤه.",
-        text: "يمكن تخصيص هذه النماذج لتناسب نشاطك التجاري وهويتك وطريقة عملك.",
-        cta: "أنشئ شيئًا مشابهًا →",
-        items: [
-          {
-            icon: "🍽️",
-            title: "موقع مطعم",
-            type: "نشاط غذائي",
-            desc: "قائمة طعام وموقع وزر طلب عبر واتساب ومعرض صور ونموذج استفسار.",
-          },
-          {
-            icon: "🏫",
-            title: "لوحة ERP للمدرسة",
-            type: "التعليم",
-            desc: "الطلاب والرسوم والحضور والتقارير ووحدات صلاحيات الإدارة.",
-          },
-          {
-            icon: "💇",
-            title: "صفحة حجز صالون",
-            type: "نشاط خدمي",
-            desc: "الخدمات والباقات واستفسار المواعيد والتقييمات وزر تواصل واضح.",
-          },
-        ],
-      },
-      industries: {
-        eyebrow: "القطاعات",
-        title: "نبني للشركات المحلية والشركات الناشئة والعلامات الخدمية.",
-        text:
-          "إذا كان عملاؤك يبحثون عبر الإنترنت أو يرسلون رسائل واتساب أو يراجعون التقييمات قبل الشراء، فأنت بحاجة إلى حضور رقمي قوي.",
-        items: [
-          "مطاعم",
-          "صالونات",
-          "عيادات",
-          "مدارس",
-          "مراكز تعليم",
-          "صالات رياضية",
-          "وكالات سفر",
-          "عقارات",
-          "متاجر تجزئة",
-          "مقدمو خدمات",
-        ],
-      },
-      process: {
-        eyebrow: "آلية العمل",
-        title: "سير عمل بسيط وواضح واحترافي.",
-        text: "بدون تعقيد. ستعرف ما الذي سيتم بناؤه ومتى سيتم تسليمه وما الدعم الذي ستحصل عليه.",
-        items: [
-          {
-            step: "01",
-            title: "استشارة مجانية",
-            desc: "نفهم نشاطك التجاري والعملاء المستهدفين ومتطلبات الموقع أو النظام بدقة.",
-          },
-          {
-            step: "02",
-            title: "الخطة والتسعير",
-            desc: "تحصل على نطاق عمل وجدول زمني وسعر ومخرجات واضحة قبل بدء المشروع.",
-          },
-          {
-            step: "03",
-            title: "التصميم والتنفيذ",
-            desc: "ننشئ الموقع أو النظام بواجهة نظيفة وتصميم متجاوب ومحتوى يركز على الأعمال.",
-          },
-          {
-            step: "04",
-            title: "الإطلاق والدعم",
-            desc: "بعد الموافقة النهائية ينطلق موقعك مع دعم للتعديلات والتحسينات.",
-          },
-        ],
-      },
-      pricing: {
-        eyebrow: "الأسعار",
-        title: "باقات واضحة لكل مرحلة من نمو الأعمال.",
-        text: "اختر موقعًا مبتدئًا أو موقع نمو أو حلًا برمجيًا مخصصًا حسب احتياجك.",
-        popular: "الأكثر طلبًا",
-        choose: "اختر",
-        items: [
-          {
-            name: "البداية",
-            price: "₹4,999",
-            subtitle: "للعلامات الشخصية والمتاجر الصغيرة",
-            features: ["موقع من صفحة واحدة", "متجاوب مع الجوال", "زر واتساب", "SEO أساسي", "التسليم خلال 3-5 أيام"],
-          },
-          {
-            name: "النمو",
-            price: "₹14,999",
-            subtitle: "للشركات التي تحتاج إلى حضور موثوق عبر الإنترنت",
-            features: ["حتى 5 صفحات", "نموذج تواصل", "خرائط Google", "أقسام الخدمات", "تحسين السرعة", "التسليم خلال 7-10 أيام"],
-            popular: true,
-          },
-          {
-            name: "مخصص",
-            price: "₹29,999+",
-            subtitle: "للبرمجيات المخصصة والأتمتة",
-            features: ["تطبيق ويب Laravel", "لوحة إدارة", "إعداد قاعدة بيانات", "تقارير", "صلاحيات حسب الدور", "سير عمل مخصص"],
-          },
-        ],
-      },
-      faq: {
-        eyebrow: "الأسئلة الشائعة",
-        title: "أسئلة متكررة قبل بدء المشروع.",
-        text: "الإجابات الواضحة تساعدك على اتخاذ القرار بسرعة والبدء بثقة.",
-        items: [
-          {
-            q: "كم يستغرق بناء موقع ويب؟",
-            a: "يمكن إنجاز الموقع الأساسي خلال 3 إلى 7 أيام. أما تطبيقات الويب المخصصة فتعتمد على الميزات ونطاق العمل.",
-          },
-          {
-            q: "هل توفرون دعم النطاق والاستضافة؟",
-            a: "نعم. يمكننا الإرشاد أو إدارة النطاق والاستضافة وإعداد البريد الإلكتروني وSSL والنشر.",
-          },
-          {
-            q: "هل يمكنكم بناء تطبيقات Laravel مخصصة؟",
-            a: "نعم. تبني ManiCode Labs لوحات تحكم ولوحات إدارة ووحدات ERP وأنظمة حجز ومسارات عمل مخصصة.",
-          },
-          {
-            q: "هل توفرون صيانة شهرية؟",
-            a: "نعم. يتوفر دعم شهري للنسخ الاحتياطي والتحديثات والإصلاحات ودعم الاستضافة والتحسينات الصغيرة.",
-          },
-        ],
-      },
-      contact: {
-        eyebrow: "التواصل",
-        title: "جاهز لبناء موقع عملك؟",
-        text: "أرسل لنا اسم نشاطك التجاري واحتياجك وسنقترح أفضل باقة وتكلفة بشكل واضح.",
-        website: "الموقع",
-        phone: "الهاتف",
-        email: "البريد الإلكتروني",
-        primaryCta: "راسلنا على واتساب →",
-        secondaryCta: "راسلنا بالبريد",
-        formEyebrow: "استفسار المشروع",
-        formTitle: "أخبرنا بما تحتاجه.",
-        enquiryCards: [
-          "نوع النشاط: مطعم / متجر / مدرسة / خدمة",
-          "الاحتياج: موقع / نظام عملاء / تطبيق مخصص",
-          "الميزانية: بداية / نمو / مخصص",
-        ],
-        formCta: "أرسل التفاصيل عبر واتساب",
-      },
-    },
+  {
+    tier: "Growth",
+    price: "₹59,999",
+    featured: true,
+    points: ["5-8 page website", "CRM + automation", "Conversion analytics"],
   },
-};
+  {
+    tier: "Business",
+    price: "₹1,20,000",
+    points: ["Industry workflow system", "Team dashboard", "API integrations"],
+  },
+  {
+    tier: "Enterprise",
+    price: "Custom",
+    points: ["Multi-branch architecture", "Advanced security", "Priority support"],
+  },
+];
 
-const navIds = ["services", "work", "process", "pricing", "contact"];
-const previewIcons = ["📱", "⚡", "🔒", "📈"];
-const languageStorageKey = "manicode-labs-language";
-const getNextLanguage = (currentLanguage) => (currentLanguage === "en" ? "ar" : "en");
-const getStoredLanguage = () => (window.localStorage.getItem(languageStorageKey) === "ar" ? "ar" : "en");
+const faqs = [
+  {
+    q: "How quickly can ManiCode Labs launch?",
+    a: "Most websites launch in 2-4 weeks, while ERP/automation systems are delivered in phased milestones.",
+  },
+  {
+    q: "Do you support schools, hotels, and restaurants with custom workflows?",
+    a: "Yes, each solution is mapped to your real operations including admissions, bookings, orders, billing, and reports.",
+  },
+  {
+    q: "Can you connect WhatsApp and CRM automation?",
+    a: "Absolutely. We connect enquiry capture, follow-ups, reminders, and lead status updates into one flow.",
+  },
+  {
+    q: "Do you provide ongoing support after launch?",
+    a: "Yes, we offer 24/7 monitoring, updates, and optimization retainers after go-live.",
+  },
+];
 
-function ButtonLink({ children, href, variant = "primary" }) {
-  const baseClass =
-    "inline-flex items-center justify-center rounded-2xl px-6 py-4 text-sm font-bold transition duration-300 hover:-translate-y-1";
-
-  const variantClass =
-    variant === "light"
-      ? "bg-white text-slate-950 shadow-xl hover:bg-slate-100"
-      : variant === "outline"
-        ? "border border-white/20 bg-white/5 text-white hover:bg-white/10"
-        : "bg-cyan-400 text-slate-950 shadow-xl shadow-cyan-500/20 hover:bg-cyan-300";
-
+function Section({ id, title, eyebrow, children, className = "" }) {
   return (
-    <a href={href} className={`${baseClass} ${variantClass}`}>
-      {children}
-    </a>
-  );
-}
-
-function Section({ id, children, className = "" }) {
-  return (
-    <section id={id} className={`min-h-screen snap-start px-5 py-20 ${className}`}>
-      <div className="mx-auto max-w-7xl">{children}</div>
+    <section id={id} className={`px-5 py-20 md:px-10 ${className}`}>
+      <div className="mx-auto max-w-7xl">
+        {eyebrow || title ? (
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            className="mb-10"
+          >
+            {eyebrow ? (
+              <p className="text-sm font-semibold uppercase tracking-[0.3em] text-violet-400">{eyebrow}</p>
+            ) : null}
+            {title ? <h2 className="mt-4 text-3xl font-bold md:text-5xl">{title}</h2> : null}
+          </motion.div>
+        ) : null}
+        {children}
+      </div>
     </section>
   );
 }
 
-function GlassCard({ children, className = "" }) {
+function Counter({ value, suffix, label }) {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    let raf;
+    const duration = 1400;
+    const start = performance.now();
+
+    const update = (time) => {
+      const progress = Math.min((time - start) / duration, 1);
+      setCount(Math.floor(progress * value));
+      if (progress < 1) {
+        raf = requestAnimationFrame(update);
+      }
+    };
+
+    raf = requestAnimationFrame(update);
+    return () => cancelAnimationFrame(raf);
+  }, [value]);
+
   return (
-    <div className={`rounded-[2rem] border border-white/10 bg-white/5 shadow-2xl backdrop-blur-xl transition duration-300 hover:-translate-y-2 hover:bg-white/10 ${className}`}>
-      {children}
+    <div className="rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur">
+      <p className="text-4xl font-bold text-violet-300">
+        {count}
+        {suffix}
+      </p>
+      <p className="mt-2 text-sm text-slate-300">{label}</p>
     </div>
   );
 }
 
-function TitleBlock({ eyebrow, title, text }) {
-  return (
-    <div className="mb-12 max-w-3xl">
-      <p className="mb-3 text-sm font-black uppercase tracking-[0.3em] text-cyan-300">{eyebrow}</p>
-      <h2 className="text-4xl font-black leading-tight md:text-6xl">{title}</h2>
-      {text ? <p className="mt-5 text-lg leading-8 text-slate-300">{text}</p> : null}
-    </div>
-  );
-}
+export default function App() {
+  const [dark, setDark] = useState(true);
+  const [projectType, setProjectType] = useState("website");
+  const [teamSize, setTeamSize] = useState(6);
+  const [monthlyLeads, setMonthlyLeads] = useState(120);
+  const [auditSubmitted, setAuditSubmitted] = useState(false);
 
-function LanguageSwitch({ isArabic, onToggle, label }) {
-  return (
-    <button
-      type="button"
-      aria-label={label}
-      aria-pressed={isArabic}
-      onClick={onToggle}
-      className="relative inline-flex h-12 w-28 items-center rounded-full border border-white/10 bg-white/10 p-1 text-sm font-black text-white shadow-lg backdrop-blur-xl transition hover:border-cyan-300/50"
-    >
-      <span
-        className={`absolute left-1 top-1 h-10 w-12 rounded-full bg-cyan-300 shadow-lg shadow-cyan-500/20 transition-transform duration-300 ${isArabic ? "translate-x-14" : "translate-x-0"}`}
-      />
-      <span className="relative z-10 flex w-full items-center justify-between px-3">
-        <span className={isArabic ? "text-white" : "text-slate-950"}>EN</span>
-        <span className={isArabic ? "text-slate-950" : "text-white"}>AR</span>
-      </span>
-    </button>
-  );
-}
+  const estimatedCost = useMemo(() => {
+    const baseMap = {
+      website: 60000,
+      automation: 120000,
+      erp: 250000,
+    };
+    return Math.round(baseMap[projectType] + teamSize * teamSizeMultiplier + monthlyLeads * monthlyLeadsMultiplier);
+  }, [monthlyLeads, projectType, teamSize]);
 
-export default function ManiCodeLabsWebsite() {
-  const [language, setLanguage] = useState(getStoredLanguage);
-  const content = siteContent[language];
-  const isArabic = language === "ar";
-  const directionalPosition = (rtlClass, ltrClass) => (isArabic ? rtlClass : ltrClass);
+  const estimatedRoi = useMemo(() => {
+    const uplift = Math.round(monthlyLeads * roiLeadRate + teamSize * roiTeamFactor);
+    return {
+      revenue: uplift * revenuePerLead,
+      leads: uplift,
+    };
+  }, [monthlyLeads, teamSize]);
 
   useEffect(() => {
-    document.documentElement.lang = content.lang;
-    document.documentElement.dir = content.dir;
-  }, [content.dir, content.lang]);
+    document.documentElement.classList.toggle("dark", dark);
+    document.documentElement.lang = "en";
 
-  useEffect(() => {
-    window.localStorage.setItem(languageStorageKey, language);
-  }, [language]);
+    if (!canUseGsap) {
+      return undefined;
+    }
+
+    const cards = gsap.utils.toArray(".parallax-card");
+    cards.forEach((card, index) => {
+      gsap.fromTo(
+        card,
+        { y: 0 },
+        {
+          y: (index + 1) * -18,
+          ease: "none",
+          scrollTrigger: {
+            trigger: card,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: true,
+          },
+        },
+      );
+    });
+
+    return () => ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+  }, [dark]);
+
+  const handleAuditSubmit = (event) => {
+    event.preventDefault();
+    setAuditSubmitted(true);
+  };
 
   return (
-    <div
-      dir={content.dir}
-      className="h-screen snap-y snap-mandatory overflow-y-scroll scroll-smooth bg-slate-950 text-white"
-    >
-      <header className="fixed left-0 right-0 top-0 z-50 border-b border-white/10 bg-slate-950/80 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-4">
-          <a href="#home" className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-cyan-300 text-xl text-slate-950 shadow-xl shadow-cyan-500/20">
-              💻
-            </div>
-            <div>
-              <p className="text-lg font-black leading-none">{company.name}</p>
-              <p className="mt-1 text-xs text-slate-400">{company.domain}</p>
-            </div>
+    <div className={`${dark ? "dark bg-slate-950 text-white" : "bg-slate-50 text-slate-900"} transition-colors`}>
+      <div className="fixed inset-0 -z-10 overflow-hidden">
+        {[...Array(particleCount)].map((_, idx) => (
+          <motion.span
+            key={idx}
+            className="absolute h-2 w-2 rounded-full bg-violet-400/25"
+            initial={{ y: "110vh", x: `${(idx * 93) % 100}vw` }}
+            animate={{ y: "-10vh" }}
+            transition={{ duration: 14 + (idx % 7), repeat: Infinity, ease: "linear" }}
+          />
+        ))}
+      </div>
+
+      <header className="sticky top-0 z-50 border-b border-white/10 bg-slate-950/80 px-5 py-4 backdrop-blur dark:text-white md:px-10">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
+          <a href="#hero" className="text-xl font-semibold tracking-tight">
+            ManiCode Labs
           </a>
-
-          <nav className="hidden gap-7 text-sm font-semibold text-slate-300 lg:flex" aria-label={content.navLabel}>
-            {content.nav.map((label, index) => (
-              <a key={navIds[index]} className="hover:text-cyan-300" href={`#${navIds[index]}`}>
-                {label}
+          <nav className="hidden gap-6 text-sm lg:flex">
+            {navItems.map((item) => (
+              <a key={item.id} href={`#${item.id}`} className="hover:text-violet-300">
+                {item.label}
               </a>
             ))}
           </nav>
-
           <div className="flex items-center gap-3">
-            <LanguageSwitch
-              isArabic={isArabic}
-              label={content.languageToggleLabel}
-              onToggle={() => setLanguage((currentLanguage) => getNextLanguage(currentLanguage))}
-            />
-            <div className="hidden sm:block">
-              <ButtonLink href={company.whatsapp[language]} variant="light">
-                {content.headerCta}
-              </ButtonLink>
-            </div>
+            <button
+              type="button"
+              aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
+              onClick={() => setDark((current) => !current)}
+              className="rounded-xl border border-white/20 px-3 py-2 text-xs"
+            >
+              {dark ? "Light" : "Dark"}
+            </button>
+            <a href={company.whatsapp} className="rounded-xl bg-violet-500 px-4 py-2 text-sm font-semibold text-white">
+              Book Free Consultation
+            </a>
           </div>
         </div>
       </header>
 
-      <main>
-        <Section id="home" className="relative flex items-center overflow-hidden pt-28">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(34,211,238,0.25),transparent_30%),radial-gradient(circle_at_85%_40%,rgba(59,130,246,0.22),transparent_34%),radial-gradient(circle_at_50%_100%,rgba(14,165,233,0.18),transparent_35%)]" />
-          <div className={`absolute top-28 h-28 w-28 rounded-full bg-cyan-400/20 blur-3xl ${directionalPosition("right-10", "left-10")}`} />
-          <div className={`absolute bottom-20 h-40 w-40 rounded-full bg-blue-500/20 blur-3xl ${directionalPosition("left-16", "right-16")}`} />
-
-          <div className="relative grid items-center gap-12 md:grid-cols-2">
-            <div>
-              <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-slate-300">
-                <span>🚀</span>
-                <span>{content.hero.badge}</span>
-              </div>
-
-              <h1 className="text-5xl font-black leading-tight md:text-7xl">{content.hero.title}</h1>
-
-              <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-300">{content.hero.text}</p>
-
-              <div className="mt-8 flex flex-col gap-4 sm:flex-row">
-                <ButtonLink href={company.whatsapp[language]}>{content.hero.primaryCta}</ButtonLink>
-                <ButtonLink href="#services" variant="outline">
-                  {content.hero.secondaryCta}
-                </ButtonLink>
-              </div>
-
-              <div className="mt-10 grid max-w-2xl grid-cols-3 gap-4 text-center">
-                {content.hero.stats.map((stat) => (
-                  <GlassCard key={stat.label} className="p-4">
-                    <p className="text-2xl font-black text-cyan-300">{stat.value}</p>
-                    <p className="text-xs text-slate-400">{stat.label}</p>
-                  </GlassCard>
-                ))}
-              </div>
-            </div>
-
-            <div className="relative perspective-[1200px]">
-              <div className="absolute -inset-6 rounded-[3rem] bg-cyan-400/20 blur-3xl" />
-              <div className="relative rotate-1 rounded-[2.5rem] border border-white/10 bg-white/10 p-5 shadow-2xl backdrop-blur-xl transition duration-500 hover:rotate-0 hover:scale-[1.02]">
-                <div className="rounded-[2rem] bg-slate-900 p-5">
-                  <div className="mb-5 flex gap-2">
-                    <span className="h-3 w-3 rounded-full bg-red-400" />
-                    <span className="h-3 w-3 rounded-full bg-yellow-400" />
-                    <span className="h-3 w-3 rounded-full bg-green-400" />
-                  </div>
-                  <div className="rounded-3xl bg-white p-6 text-slate-950">
-                    <p className="text-sm font-black text-cyan-600">{content.hero.preview.eyebrow}</p>
-                    <h2 className="mt-3 text-3xl font-black">{content.hero.preview.title}</h2>
-                    <p className="mt-3 text-slate-600">{content.hero.preview.text}</p>
-                  </div>
-                  <div className="mt-4 grid grid-cols-2 gap-4">
-                    {content.hero.preview.items.map((item, index) => (
-                      <div key={item} className="rounded-3xl bg-white/5 p-5">
-                        <p className="text-3xl">{previewIcons[index]}</p>
-                        <p className="mt-3 font-bold">{item}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </Section>
-
-        <Section id="services" className="bg-slate-900/50">
-          <TitleBlock
-            eyebrow={content.sections.services.eyebrow}
-            title={content.sections.services.title}
-            text={content.sections.services.text}
-          />
-
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-            {content.sections.services.items.map(({ icon, title, desc, points }) => (
-              <GlassCard key={title} className="p-7">
-                <p className="text-4xl">{icon}</p>
-                <h3 className="mt-5 text-2xl font-black">{title}</h3>
-                <p className="mt-4 leading-7 text-slate-400">{desc}</p>
-                <div className="mt-6 space-y-3">
-                  {points.map((point) => (
-                    <div key={point} className="flex items-center gap-2 text-sm text-slate-300">
-                      <span className="text-cyan-300">✓</span>
-                      <span>{point}</span>
-                    </div>
-                  ))}
-                </div>
-              </GlassCard>
-            ))}
-          </div>
-        </Section>
-
-        <Section id="work">
-          <TitleBlock
-            eyebrow={content.sections.work.eyebrow}
-            title={content.sections.work.title}
-            text={content.sections.work.text}
-          />
-
-          <div className="grid gap-6 md:grid-cols-3">
-            {content.sections.work.items.map((project) => (
-              <GlassCard key={project.title} className="group overflow-hidden p-0">
-                <div className="h-44 bg-gradient-to-br from-cyan-300/30 via-blue-500/20 to-slate-900 p-6">
-                  <p className="text-5xl">{project.icon}</p>
-                </div>
-                <div className="p-7">
-                  <p className="text-sm font-bold text-cyan-300">{project.type}</p>
-                  <h3 className="mt-2 text-2xl font-black">{project.title}</h3>
-                  <p className="mt-4 leading-7 text-slate-400">{project.desc}</p>
-                  <a href={company.whatsapp[language]} className="mt-6 inline-block font-bold text-cyan-300">
-                    {content.sections.work.cta}
+      <AnimatePresence mode="wait">
+        <motion.main initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.7 }}>
+          <Section id="hero" className="pt-14 md:pt-20">
+            <div className="grid items-center gap-10 md:grid-cols-2">
+              <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }}>
+                <p className="inline-flex rounded-full border border-violet-400/30 bg-violet-500/10 px-4 py-2 text-xs uppercase tracking-[0.3em] text-violet-300">
+                  Premium SaaS Agency
+                </p>
+                <h1 className="mt-5 text-4xl font-bold leading-tight md:text-6xl">
+                  Websites, Automation & Business Systems That Grow Your Business.
+                </h1>
+                <p className="mt-6 text-lg text-slate-300 dark:text-slate-300">
+                  We help schools, hotels, restaurants, malls, and growing businesses automate operations, generate leads, and build a premium online presence.
+                </p>
+                <div className="mt-8 flex flex-wrap gap-4">
+                  <a href={company.whatsapp} className="rounded-2xl bg-violet-500 px-6 py-3 font-semibold text-white">
+                    Book Free Consultation
+                  </a>
+                  <a href="#interactive-dashboard-mockups" className="rounded-2xl border border-white/20 px-6 py-3 font-semibold">
+                    View Live Demo
                   </a>
                 </div>
-              </GlassCard>
-            ))}
-          </div>
-        </Section>
-
-        <Section id="industries" className="bg-slate-900/50">
-          <TitleBlock
-            eyebrow={content.sections.industries.eyebrow}
-            title={content.sections.industries.title}
-            text={content.sections.industries.text}
-          />
-
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-5">
-            {content.sections.industries.items.map((industry) => (
-              <GlassCard key={industry} className="p-5 text-center">
-                <p className="font-bold">{industry}</p>
-              </GlassCard>
-            ))}
-          </div>
-        </Section>
-
-        <Section id="process">
-          <TitleBlock
-            eyebrow={content.sections.process.eyebrow}
-            title={content.sections.process.title}
-            text={content.sections.process.text}
-          />
-
-          <div className="grid gap-6 md:grid-cols-4">
-            {content.sections.process.items.map((item) => (
-              <GlassCard key={item.step} className="p-7">
-                <p className="text-5xl font-black text-cyan-300/40">{item.step}</p>
-                <h3 className="mt-5 text-2xl font-black">{item.title}</h3>
-                <p className="mt-4 leading-7 text-slate-400">{item.desc}</p>
-              </GlassCard>
-            ))}
-          </div>
-        </Section>
-
-        <Section id="pricing" className="bg-white text-slate-950">
-          <TitleBlock
-            eyebrow={content.sections.pricing.eyebrow}
-            title={content.sections.pricing.title}
-            text={content.sections.pricing.text}
-          />
-
-          <div className="grid gap-6 md:grid-cols-3">
-            {content.sections.pricing.items.map((plan) => (
-              <div
-                key={plan.name}
-                className={`relative rounded-[2rem] border border-slate-200 bg-white p-7 shadow-xl transition duration-300 hover:-translate-y-2 ${
-                  plan.popular ? "ring-4 ring-cyan-300" : ""
-                }`}
-              >
-                {plan.popular ? (
-                  <div className={`absolute rounded-full bg-slate-950 px-3 py-1 text-xs font-black text-white ${directionalPosition("left-5 top-5", "right-5 top-5")}`}>
-                    {content.sections.pricing.popular}
-                  </div>
-                ) : null}
-
-                <h3 className="text-2xl font-black">{plan.name}</h3>
-                <p className="mt-2 text-slate-500">{plan.subtitle}</p>
-                <p className="mt-5 text-4xl font-black">{plan.price}</p>
-
-                <div className="mt-7 space-y-3">
-                  {plan.features.map((feature) => (
-                    <div key={`${plan.name}-${feature}`} className="flex items-center gap-3">
-                      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-cyan-100 text-sm text-cyan-700">✓</span>
-                      <span>{feature}</span>
+                <div className="mt-8 grid grid-cols-2 gap-4 text-sm md:grid-cols-4">
+                  {[
+                    "Live analytics counter",
+                    "Floating WhatsApp notifications",
+                    "Business growth metrics",
+                    "Client success indicators",
+                  ].map((feature) => (
+                    <div key={feature} className="rounded-2xl border border-white/10 bg-white/5 p-3">
+                      {feature}
                     </div>
                   ))}
                 </div>
+              </motion.div>
 
-                <a
-                  href={company.whatsapp[language]}
-                  className="mt-8 inline-flex w-full items-center justify-center rounded-2xl bg-slate-950 px-6 py-4 text-sm font-black text-white transition hover:bg-slate-800"
+              <motion.div
+                className="parallax-card rounded-[2rem] border border-white/10 bg-gradient-to-br from-violet-400/20 via-slate-900 to-slate-950 p-6 shadow-2xl"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+              >
+                <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                  <p className="text-sm uppercase tracking-[0.2em] text-violet-300">Animated dashboard preview</p>
+                  <div className="mt-4 grid grid-cols-2 gap-3">
+                    <div className="rounded-xl bg-white/10 p-4">
+                      <p className="text-xs text-slate-300">Revenue Growth</p>
+                      <p className="mt-2 text-2xl font-semibold">+184%</p>
+                    </div>
+                    <div className="rounded-xl bg-white/10 p-4">
+                      <p className="text-xs text-slate-300">Qualified Leads</p>
+                      <p className="mt-2 text-2xl font-semibold">1,248</p>
+                    </div>
+                    <div className="col-span-2 rounded-xl bg-white/10 p-4">
+                      <p className="text-xs text-slate-300">AI Automation Status</p>
+                      <motion.div
+                        className="mt-3 h-2 rounded-full bg-violet-400"
+                        initial={{ width: "0%" }}
+                        whileInView={{ width: "87%" }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 1.1 }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+          </Section>
+
+          <Section id="trusted-by-businesses" eyebrow="Trusted By Businesses" title="Built for leaders across high-growth SMB industries.">
+            <div className="grid gap-4 md:grid-cols-3">
+              {["EduCore Group", "Grand Arc Hotels", "Urban Eats", "Nexa Clinics", "MallHub", "Prime Realty"].map(
+                (logo) => (
+                  <div key={logo} className="rounded-2xl border border-white/10 bg-white/5 p-5 text-center text-sm text-slate-300">
+                    {logo}
+                  </div>
+                ),
+              )}
+            </div>
+          </Section>
+
+          <Section id="services" eyebrow="Services Grid" title="Full-stack digital growth systems for modern businesses." className="bg-slate-900/50">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {services.map((service) => (
+                <motion.div
+                  key={service}
+                  whileHover={{ y: -6 }}
+                  className="rounded-3xl border border-white/10 bg-white/5 p-5 backdrop-blur"
                 >
-                  {content.sections.pricing.choose} {plan.name}
-                </a>
+                  {service}
+                </motion.div>
+              ))}
+            </div>
+          </Section>
+
+          <Section id="interactive-dashboard-mockups" eyebrow="Interactive Product Showcase" title="Interactive dashboard mockups that mirror your operations.">
+            <div className="grid gap-4 md:grid-cols-3">
+              {dashboards.map((item) => (
+                <div key={item.title} className="parallax-card rounded-3xl border border-white/10 bg-white/5 p-5">
+                  <h3 className="text-xl font-semibold">{item.title}</h3>
+                  <p className="mt-2 text-violet-300">{item.metric}</p>
+                </div>
+              ))}
+            </div>
+          </Section>
+
+          <Section id="solutions" eyebrow="Industry-specific solutions" title="Industries we serve with dedicated workflows." className="bg-slate-900/50">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+              {industries.map((industry) => (
+                <div key={industry} className="rounded-2xl border border-white/10 bg-white/5 p-4 text-center text-sm">
+                  {industry}
+                </div>
+              ))}
+            </div>
+          </Section>
+
+          <Section id="why-choose" eyebrow="Why Choose ManiCode Labs" title="Fast delivery, trusted execution, measurable outcomes.">
+            <div className="grid gap-4 md:grid-cols-4">
+              {[
+                "Fast Delivery",
+                "Affordable Pricing",
+                "Custom Solutions",
+                "Ongoing Support",
+                "Mobile First",
+                "SEO Optimized",
+                "WhatsApp Integration",
+                "Enterprise-grade reliability",
+              ].map((point) => (
+                <div key={point} className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                  {point}
+                </div>
+              ))}
+            </div>
+          </Section>
+
+          <Section id="process" eyebrow="Process Timeline" title="Discovery → Planning → Design → Development → Launch → Support" className="bg-slate-900/50">
+            <div className="grid gap-4 md:grid-cols-6">
+              {processSteps.map((step, index) => (
+                <div key={step} className="rounded-2xl border border-white/10 bg-white/5 p-4 text-center">
+                  <p className="text-xs text-violet-300">0{index + 1}</p>
+                  <p className="mt-2 font-semibold">{step}</p>
+                </div>
+              ))}
+            </div>
+          </Section>
+
+          <Section id="saas-product-gallery" eyebrow="SaaS Product Gallery" title="Launch-ready product experiences for your team and customers.">
+            <div className="grid gap-4 md:grid-cols-3">
+              {products.map((product) => (
+                <div key={product} className="rounded-3xl border border-white/10 bg-gradient-to-br from-violet-500/20 to-slate-900 p-6">
+                  <h3 className="text-xl font-semibold">{product}</h3>
+                  <p className="mt-2 text-sm text-slate-300">Custom modules, live analytics, and workflow automation.</p>
+                </div>
+              ))}
+            </div>
+          </Section>
+
+          <Section id="results" eyebrow="Animated statistics" title="Results that directly impact growth and operations." className="bg-slate-900/50">
+            <div className="grid gap-4 md:grid-cols-4">
+              {stats.map((item) => (
+                <Counter key={item.label} {...item} />
+              ))}
+            </div>
+          </Section>
+
+          <Section id="live-project-calculator" eyebrow="Live project calculator" title="Estimate investment in seconds.">
+            <div className="grid gap-8 rounded-3xl border border-white/10 bg-white/5 p-6 md:grid-cols-2">
+              <div className="space-y-5">
+                <label className="block">
+                  <span className="text-sm text-slate-300">Project Type</span>
+                  <select
+                    value={projectType}
+                    onChange={(event) => setProjectType(event.target.value)}
+                    className="mt-2 w-full rounded-xl border border-white/10 bg-slate-900 p-3"
+                  >
+                    <option value="website">Website Development</option>
+                    <option value="automation">Business Automation</option>
+                    <option value="erp">School/Hotel ERP</option>
+                  </select>
+                </label>
+                <label className="block">
+                  <span className="text-sm text-slate-300">Team Size: {teamSize}</span>
+                  <input
+                    type="range"
+                    min="2"
+                    max="80"
+                    value={teamSize}
+                    onChange={(event) => setTeamSize(Number(event.target.value))}
+                    className="mt-2 w-full"
+                  />
+                </label>
+                <label className="block">
+                  <span className="text-sm text-slate-300">Monthly Leads: {monthlyLeads}</span>
+                  <input
+                    type="range"
+                    min="20"
+                    max="1200"
+                    value={monthlyLeads}
+                    onChange={(event) => setMonthlyLeads(Number(event.target.value))}
+                    className="mt-2 w-full"
+                  />
+                </label>
               </div>
-            ))}
-          </div>
-        </Section>
-
-        <Section id="faq" className="bg-slate-900/50">
-          <TitleBlock
-            eyebrow={content.sections.faq.eyebrow}
-            title={content.sections.faq.title}
-            text={content.sections.faq.text}
-          />
-
-          <div className="grid gap-5 md:grid-cols-2">
-            {content.sections.faq.items.map((faq) => (
-              <GlassCard key={faq.q} className="p-7">
-                <h3 className="text-xl font-black">{faq.q}</h3>
-                <p className="mt-4 leading-7 text-slate-400">{faq.a}</p>
-              </GlassCard>
-            ))}
-          </div>
-        </Section>
-
-        <Section id="contact" className="flex items-center">
-          <div className="grid items-center gap-10 md:grid-cols-2">
-            <div>
-              <TitleBlock
-                eyebrow={content.sections.contact.eyebrow}
-                title={content.sections.contact.title}
-                text={content.sections.contact.text}
-              />
-
-              <div className="space-y-4 text-slate-300">
-                <p><span className="font-bold text-white">{content.sections.contact.website}:</span> {company.domain}</p>
-                <p><span className="font-bold text-white">{content.sections.contact.phone}:</span> {company.phone}</p>
-                <p><span className="font-bold text-white">{content.sections.contact.email}:</span> {company.email}</p>
-              </div>
-
-              <div className="mt-8 flex flex-col gap-4 sm:flex-row">
-                <ButtonLink href={company.whatsapp[language]}>{content.sections.contact.primaryCta}</ButtonLink>
-                <ButtonLink href={company.mailto[language]} variant="outline">
-                  {content.sections.contact.secondaryCta}
-                </ButtonLink>
+              <div className="rounded-2xl border border-violet-400/30 bg-violet-500/10 p-6">
+                <p className="text-sm uppercase tracking-[0.2em] text-violet-300">Estimated Project Cost</p>
+                <p className="mt-4 text-4xl font-bold">₹{estimatedCost.toLocaleString("en-IN")}</p>
+                <p className="mt-3 text-sm text-slate-300">Tailored based on complexity, users, and lead volume.</p>
               </div>
             </div>
+          </Section>
 
-            <GlassCard className="p-8">
-              <p className="text-sm font-black uppercase tracking-[0.3em] text-cyan-300">{content.sections.contact.formEyebrow}</p>
-              <h3 className="mt-4 text-3xl font-black">{content.sections.contact.formTitle}</h3>
-              <div className="mt-6 space-y-4">
-                {content.sections.contact.enquiryCards.map((card) => (
-                  <div key={card} className="rounded-2xl border border-white/10 bg-white/5 p-4 text-slate-300">
-                    {card}
-                  </div>
-                ))}
+          <Section id="roi-calculator" eyebrow="ROI calculator" title="Model expected growth from automation and conversion upgrades." className="bg-slate-900/50">
+            <div className="grid gap-6 rounded-3xl border border-white/10 bg-white/5 p-6 md:grid-cols-2">
+              <div>
+                <p className="text-sm text-slate-300">Projected additional qualified leads / month</p>
+                <p className="mt-3 text-4xl font-bold text-violet-300">{estimatedRoi.leads}</p>
               </div>
-              <a
-                href={company.whatsapp[language]}
-                className="mt-6 inline-flex w-full items-center justify-center rounded-2xl bg-cyan-300 px-6 py-4 font-black text-slate-950 transition hover:bg-cyan-200"
-              >
-                {content.sections.contact.formCta}
+              <div>
+                <p className="text-sm text-slate-300">Projected additional monthly revenue</p>
+                <p className="mt-3 text-4xl font-bold text-violet-300">₹{estimatedRoi.revenue.toLocaleString("en-IN")}</p>
+              </div>
+            </div>
+          </Section>
+
+          <Section id="case-studies" eyebrow="Case studies with results" title="Before/after transformation stories from real businesses.">
+            <div className="grid gap-4 md:grid-cols-2">
+              {[
+                ["Clinic chain", "Before: manual calls, 35% no-shows", "After: WhatsApp reminders, 72% conversion uplift"],
+                ["Boutique hotel", "Before: fragmented booking channels", "After: unified booking engine, 2.4x direct bookings"],
+                ["Restaurant group", "Before: order chaos during peak", "After: POS automation, 39% faster kitchen turnaround"],
+                ["School campus", "Before: attendance in spreadsheets", "After: ERP tracking, instant parent alerts"],
+              ].map(([name, before, after]) => (
+                <div key={name} className="rounded-3xl border border-white/10 bg-white/5 p-6">
+                  <h3 className="text-xl font-semibold">{name}</h3>
+                  <p className="mt-3 text-sm text-slate-300">{before}</p>
+                  <p className="mt-2 text-sm text-violet-300">{after}</p>
+                </div>
+              ))}
+            </div>
+          </Section>
+
+          <Section id="pricing" eyebrow="Pricing Section" title="Choose a growth package that matches your stage." className="bg-slate-900/50">
+            <div className="grid gap-4 md:grid-cols-4">
+              {pricing.map((plan) => (
+                <div
+                  key={plan.tier}
+                  className={`rounded-3xl border p-6 ${plan.featured ? "border-violet-400 bg-violet-500/10" : "border-white/10 bg-white/5"}`}
+                >
+                  <h3 className="text-2xl font-bold">{plan.tier}</h3>
+                  <p className="mt-3 text-3xl font-semibold">{plan.price}</p>
+                  <ul className="mt-4 space-y-2 text-sm text-slate-300">
+                    {plan.points.map((point) => (
+                      <li key={point}>• {point}</li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </Section>
+
+          <Section id="testimonials" eyebrow="Video testimonials" title="Founders trust ManiCode Labs for business-critical systems.">
+            <div className="grid gap-4 md:grid-cols-3">
+              {["Hotel owner", "School principal", "Restaurant founder"].map((name) => (
+                <div key={name} className="rounded-3xl border border-white/10 bg-white/5 p-5">
+                  <div className="flex h-40 items-center justify-center rounded-2xl bg-slate-800 text-4xl">▶</div>
+                  <p className="mt-4 font-semibold">{name}</p>
+                  <p className="text-sm text-yellow-300">★★★★★</p>
+                </div>
+              ))}
+            </div>
+          </Section>
+
+          <Section id="ai-powered-business-audit-form" eyebrow="AI-powered business audit form" title="Get an instant digital maturity score and roadmap." className="bg-slate-900/50">
+            <form onSubmit={handleAuditSubmit} className="grid gap-4 rounded-3xl border border-white/10 bg-white/5 p-6 md:grid-cols-2">
+              <label className="block">
+              <span className="mb-2 block text-xs text-slate-300">Business name</span>
+              <input
+                name="businessName"
+                required
+                className="w-full rounded-xl border border-white/10 bg-slate-900 p-3"
+                placeholder="e.g. Metro Dental Clinic"
+              />
+              </label>
+              <label className="block">
+              <span className="mb-2 block text-xs text-slate-300">Industry</span>
+              <input name="industry" required className="w-full rounded-xl border border-white/10 bg-slate-900 p-3" placeholder="e.g. Healthcare" />
+              </label>
+              <label className="block">
+              <span className="mb-2 block text-xs text-slate-300">Monthly enquiries</span>
+              <input
+                type="number"
+                name="monthlyEnquiries"
+                required
+                className="w-full rounded-xl border border-white/10 bg-slate-900 p-3"
+                placeholder="e.g. 300"
+              />
+              </label>
+              <label className="block">
+              <span className="mb-2 block text-xs text-slate-300">Current tools</span>
+              <input name="currentTools" required className="w-full rounded-xl border border-white/10 bg-slate-900 p-3" placeholder="Excel, Zoho, WhatsApp..." />
+              </label>
+              <label className="block md:col-span-2">
+              <span className="mb-2 block text-xs text-slate-300">Operations bottleneck</span>
+              <textarea
+                name="operationsBottleneck"
+                required
+                className="w-full rounded-xl border border-white/10 bg-slate-900 p-3"
+                placeholder="What is your biggest operations bottleneck?"
+                rows="4"
+              />
+              </label>
+              <button type="submit" className="rounded-xl bg-violet-500 px-6 py-3 font-semibold text-white md:col-span-2">
+              Get AI Business Assessment
+              </button>
+              {auditSubmitted ? (
+              <p className="text-sm text-violet-300 md:col-span-2">Assessment request captured. Our team will contact you shortly.</p>
+              ) : null}
+            </form>
+          </Section>
+
+          <Section id="faq" eyebrow="FAQ" title="Everything you need before starting.">
+            <div className="grid gap-4 md:grid-cols-2">
+              {faqs.map((faq) => (
+                <div key={faq.q} className="rounded-3xl border border-white/10 bg-white/5 p-6">
+                  <h3 className="text-lg font-semibold">{faq.q}</h3>
+                  <p className="mt-3 text-sm text-slate-300">{faq.a}</p>
+                </div>
+              ))}
+            </div>
+          </Section>
+
+          <Section id="final-cta" title="Ready to Digitize Your Business?" className="pb-36">
+            <div className="rounded-3xl border border-violet-400/30 bg-violet-500/10 p-10 text-center">
+              <p className="mx-auto max-w-3xl text-slate-200">
+                Build a trust-first, conversion-focused digital system that scales your operations and revenue.
+              </p>
+              <a href={company.whatsapp} className="mt-6 inline-flex rounded-2xl bg-violet-500 px-8 py-3 font-semibold text-white">
+                Get Free Consultation
               </a>
-            </GlassCard>
+            </div>
+          </Section>
+        </motion.main>
+      </AnimatePresence>
+
+      <a
+        href={company.whatsapp}
+        className="fixed bottom-24 right-4 z-50 rounded-full bg-emerald-500 px-5 py-3 text-sm font-semibold text-white shadow-xl"
+      >
+        WhatsApp Us
+      </a>
+
+      <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-white/10 bg-slate-950/90 px-5 py-3 backdrop-blur">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 text-sm">
+          <p>
+            Speak with ManiCode Labs in 15 minutes. <span className="text-violet-300">No obligations.</span>
+          </p>
+          <div className="flex gap-3">
+            <a href={company.whatsapp} className="rounded-lg bg-violet-500 px-4 py-2 font-semibold text-white">
+              Book Free Consultation
+            </a>
+            <a href={`mailto:${company.email}`} className="rounded-lg border border-white/20 px-4 py-2 font-semibold">
+              Contact Sales
+            </a>
           </div>
-        </Section>
-      </main>
+        </div>
+      </div>
     </div>
   );
 }
