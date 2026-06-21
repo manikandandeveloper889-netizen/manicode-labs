@@ -423,7 +423,7 @@ const siteContent = {
 const navIds = ["services", "work", "process", "pricing", "contact"];
 const previewIcons = ["📱", "⚡", "🔒", "📈"];
 
-function ButtonLink({ children, href, variant = "primary", className = "" }) {
+function ButtonLink({ children, href, variant = "primary" }) {
   const baseClass =
     "inline-flex items-center justify-center rounded-2xl px-6 py-4 text-sm font-bold transition duration-300 hover:-translate-y-1";
 
@@ -435,7 +435,7 @@ function ButtonLink({ children, href, variant = "primary", className = "" }) {
         : "bg-cyan-400 text-slate-950 shadow-xl shadow-cyan-500/20 hover:bg-cyan-300";
 
   return (
-    <a href={href} className={`${baseClass} ${variantClass} ${className}`.trim()}>
+    <a href={href} className={`${baseClass} ${variantClass}`}>
       {children}
     </a>
   );
@@ -491,6 +491,7 @@ export default function ManiCodeLabsWebsite() {
   const [language, setLanguage] = useState("en");
   const content = siteContent[language];
   const isArabic = language === "ar";
+  const directionalPosition = (rtlClass, ltrClass) => (isArabic ? rtlClass : ltrClass);
 
   useEffect(() => {
     document.documentElement.lang = content.lang;
@@ -533,9 +534,11 @@ export default function ManiCodeLabsWebsite() {
               label={content.languageToggleLabel}
               onToggle={() => setLanguage((current) => (current === "en" ? "ar" : "en"))}
             />
-            <ButtonLink href={company.whatsapp[language]} variant="light" className="hidden sm:inline-flex">
-              {content.headerCta}
-            </ButtonLink>
+            <div className="hidden sm:block">
+              <ButtonLink href={company.whatsapp[language]} variant="light">
+                {content.headerCta}
+              </ButtonLink>
+            </div>
           </div>
         </div>
       </header>
@@ -543,8 +546,8 @@ export default function ManiCodeLabsWebsite() {
       <main>
         <Section id="home" className="relative flex items-center overflow-hidden pt-28">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(34,211,238,0.25),transparent_30%),radial-gradient(circle_at_85%_40%,rgba(59,130,246,0.22),transparent_34%),radial-gradient(circle_at_50%_100%,rgba(14,165,233,0.18),transparent_35%)]" />
-          <div className={`absolute top-28 h-28 w-28 rounded-full bg-cyan-400/20 blur-3xl ${isArabic ? "right-10" : "left-10"}`} />
-          <div className={`absolute bottom-20 h-40 w-40 rounded-full bg-blue-500/20 blur-3xl ${isArabic ? "left-16" : "right-16"}`} />
+          <div className={`absolute top-28 h-28 w-28 rounded-full bg-cyan-400/20 blur-3xl ${directionalPosition("right-10", "left-10")}`} />
+          <div className={`absolute bottom-20 h-40 w-40 rounded-full bg-blue-500/20 blur-3xl ${directionalPosition("left-16", "right-16")}`} />
 
           <div className="relative grid items-center gap-12 md:grid-cols-2">
             <div>
@@ -704,7 +707,7 @@ export default function ManiCodeLabsWebsite() {
                 }`}
               >
                 {plan.popular ? (
-                  <div className={`absolute rounded-full bg-slate-950 px-3 py-1 text-xs font-black text-white ${isArabic ? "left-5 top-5" : "right-5 top-5"}`}>
+                  <div className={`absolute rounded-full bg-slate-950 px-3 py-1 text-xs font-black text-white ${directionalPosition("left-5 top-5", "right-5 top-5")}`}>
                     {content.sections.pricing.popular}
                   </div>
                 ) : null}
